@@ -1,14 +1,26 @@
 name: learn-github-actions-pr
 on:  
   pull_request:
+    types: [opened, edited, reopened]
     branches: 
       - main
 jobs:
-  check-bats-version:
+  pr-lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: dylanvann/check-pull-request-title
-      with:
-        # Match pull request titles in the form UI-1234 - Message.
-        pattern: '^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?) - '
+      - uses: morrisoncole/pr-lint-action@v1.5.0
+        with:
+          title-regex: "^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)+"
+          on-failed-regex-fail-action: false
+          on-failed-regex-request-changes: false
+          on-failed-regex-create-review: true
+          on-failed-regex-comment:
+            "This is just an example. Failed regex: `%regex%`!"
+
+  # check-bats-version:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - uses: deepakputhraya/action-pr-title@master
+  #     with:
+  #       regex: '^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?) - '
