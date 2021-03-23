@@ -7,7 +7,8 @@ jobs:
   check-bats-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: npm install -g bats
-      - run: bats -v
+    - uses: actions/checkout@v2
+    - uses: dylanvann/check-pull-request-title@v1
+      with:
+        # Match pull request titles in the form UI-1234 - Message.
+        pattern: '^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?) - '
