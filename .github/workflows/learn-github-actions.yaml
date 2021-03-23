@@ -16,6 +16,7 @@ jobs:
           on-failed-regex-create-review: true
           on-failed-regex-comment:
             "This is just an example. Failed regex: `%regex%`!"
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
 
   # check-bats-version:
   #   runs-on: ubuntu-latest
