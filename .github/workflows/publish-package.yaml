@@ -32,7 +32,6 @@ jobs:
 
           // extract if the text in PR title says 'major', 'minor', or 'fix'
           const pr_title = github.event.pull_request.head.ref
-          const regex = /^(\bmajor\b)|^(\bminor\b)|^(\bfix\b)/gm
           if (pr_title.search(/^(\bmajor\b/gm) !== -1)) {
             currentVerArr[0] = Number(currentVerArr[0])
             currentVerArr[0]++
