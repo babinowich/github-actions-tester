@@ -10,7 +10,8 @@ jobs:
   pr-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: morrisoncole/pr-lint-action@v1.5.0
+      - name: Semantic Checker
+        uses: morrisoncole/pr-lint-action@v1.5.0
         with:
           title-regex: "^(major|minor|fix)"
           on-failed-regex-fail-action: true
@@ -18,5 +19,7 @@ jobs:
           on-failed-regex-create-review: true
           on-failed-regex-comment: "This PR does not begin with a release designation. Each PR into main must begin with 'major','minor', or 'fix'"
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
+      - name: Install
+        run: npm install
       - run: npm lint
       - run: npm format
