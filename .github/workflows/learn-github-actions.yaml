@@ -1,19 +1,19 @@
-name: learn-github-actions-pr
-on:  
-  pull_request:
-    types: [opened, edited, reopened]
-    branches: 
-      - main
-jobs:
-  pr-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: morrisoncole/pr-lint-action@v1.5.0
-        with:
-          title-regex: "^[0-9]+.[0-9]+.[0-9]+ - "
-          on-failed-regex-fail-action: true
-          on-failed-regex-request-changes: true
-          on-failed-regex-create-review: true
-          on-failed-regex-comment:
-            "This PR does not begin with a semantic release designation. Each PR into main must begin with 'x.x.x - '"
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+# name: learn-github-actions-pr
+# on:  
+#   pull_request:
+#     types: [opened, edited, reopened]
+#     branches: 
+#       - main
+# jobs:
+#   pr-lint:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: morrisoncole/pr-lint-action@v1.5.0
+#         with:
+#           title-regex: "^[0-9]+.[0-9]+.[0-9]+ - "
+#           on-failed-regex-fail-action: true
+#           on-failed-regex-request-changes: true
+#           on-failed-regex-create-review: true
+#           on-failed-regex-comment:
+#             "This PR does not begin with a semantic release designation. Each PR into main must begin with 'x.x.x - '"
+#           repo-token: "${{ secrets.GITHUB_TOKEN }}"

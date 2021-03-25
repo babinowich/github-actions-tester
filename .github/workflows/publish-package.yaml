@@ -1,0 +1,59 @@
+name: Publish & Package
+on:
+  release:
+    types: [created]
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Setup .npmrc file to publish to GitHub Packages
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@yembo'
+      - name: Install
+        run: npm install
+      - name: Get Current Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - name: Create To-Be Version
+        id: to-be-version
+        uses: actions/github-script@v3
+        with: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          // grab the current version and split it
+          let currentVer = ${{steps.package-version.outputs.current-version}}
+          let currentVerArr = currentVer.split('.')
+
+          // extract if the text in PR title says 'major', 'minor', or 'fix'
+          const pr_title = github.event.pull_request.head.ref
+          const regex = /^(\bmajor\b)|^(\bminor\b)|^(\bfix\b)/gm
+          if (pr_title.search(/^(\bmajor\b/gm) !== -1)) {
+            currentVerArr[0] = Number(currentVerArr[0])
+            currentVerArr[0]++
+            currentVerArr[0] = String(currentVerArr[0])
+          } else if (pr_title.search(/^(\minor\b/gm) !== -1)) {
+            currentVerArr[1] = Number(currentVerArr[1])
+            currentVerArr[1]++
+            currentVerArr[1] = String(currentVerArr[1])
+          } else if (pr_title.search(/^(\fix\b/gm) !== -1)) {
+            currentVerArr[2] = Number(currentVerArr[2])
+            currentVerArr[2]++
+            currentVerArr[2] = String(currentVerArr[2])
+          }
+
+          // return new version in 0.0.0 format
+          console.log('final', currentVerArr.join('.') )
+          return currentVerArr.join('.')
+        result-encoding: string
+      - name: Version
+        run: npm version ${{steps.to-be-version.outputs.result}}
+      # - name: Release
+      #   run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
