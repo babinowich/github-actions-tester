@@ -60,8 +60,7 @@ jobs:
             console.log("HELLO THERE JS IN ACTIONS")
             // grab the current version and split it
             let currentVer = ${{steps.package-version.outputs.current-version}}
-
-            console.log(typeof currentVer)
+            console.log(currentVer)
             let currentVerArr = currentVer.split('.')
             // return new version in 0.0.0 format
       - name: Version
