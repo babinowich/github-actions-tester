@@ -55,6 +55,7 @@ jobs:
         uses: actions/github-script@v3
         with: 
           github-token: ${{secrets.GITHUB_TOKEN}}
+          result-encoding: string
           script: |
               console.log("HELLO THERE JS IN ACTIONS")
               // grab the current version and split it
@@ -83,7 +84,5 @@ jobs:
 
               // return new version in 0.0.0 format
               console.log('final', currentVerArr.join('.') )
-              return currentVerArr.join('.')
-            result-encoding: string
       - name: Version
         run: npm version ${{steps.to-be-version.outputs.result}}
