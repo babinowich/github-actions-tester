@@ -13,9 +13,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
-          registry-url: 'https://npm.pkg.github.com'
-          # Defaults to the user or organization that owns the workflow file
-          scope: '@yembo'
+          # registry-url: 'https://npm.pkg.github.com'
+          # # Defaults to the user or organization that owns the workflow file
+          # scope: '@yembo'
       - name: Install
         run: npm install
       - name: Get Current Version
@@ -26,21 +26,26 @@ jobs:
         uses: actions/github-script@v3
         with: ${{secrets.GITHUB_TOKEN}}
         script: |
+          console.log("HELLO THERE JS IN ACTIONS")
           // grab the current version and split it
           let currentVer = ${{steps.package-version.outputs.current-version}}
           let currentVerArr = currentVer.split('.')
 
+          console.log('currentVer', currentVer)
           // extract if the text in PR title says 'major', 'minor', or 'fix'
           const pr_title = github.event.pull_request.head.ref
           if (pr_title.search(/^(\bmajor\b/gm) !== -1)) {
+            console.log('MAJOR meow')
             currentVerArr[0] = Number(currentVerArr[0])
             currentVerArr[0]++
             currentVerArr[0] = String(currentVerArr[0])
           } else if (pr_title.search(/^(\minor\b/gm) !== -1)) {
+            console.log('MINOR woof')
             currentVerArr[1] = Number(currentVerArr[1])
             currentVerArr[1]++
             currentVerArr[1] = String(currentVerArr[1])
           } else if (pr_title.search(/^(\fix\b/gm) !== -1)) {
+            console.log('this is a fix')
             currentVerArr[2] = Number(currentVerArr[2])
             currentVerArr[2]++
             currentVerArr[2] = String(currentVerArr[2])

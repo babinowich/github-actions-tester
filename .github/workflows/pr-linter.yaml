@@ -7,20 +7,37 @@ on:
     branches:
       - main
 jobs:
-  pr-lint:
+  # pr-lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Semantic Checker
+  #       uses: morrisoncole/pr-lint-action@v1.5.0
+  #       with:
+  #         title-regex: "^(major|minor|fix)"
+  #         on-failed-regex-fail-action: true
+  #         on-failed-regex-request-changes: true
+  #         on-failed-regex-create-review: true
+  #         on-failed-regex-comment: "This PR does not begin with a release designation. Each PR into main must begin with 'major','minor', or 'fix'"
+  #         repo-token: '${{ secrets.GITHUB_TOKEN }}'
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: '14.x'
+  #         # registry-url: 'https://npm.pkg.github.com'
+  #         # # Defaults to the user or organization that owns the workflow file
+  #         # scope: '@yembo'
+  #     - name: Install
+  #       run: npm install
+  #     - run: npm run lint
+  #     - run: npm run format
+  package:
     runs-on: ubuntu-latest
     steps:
-      - name: Semantic Checker
-        uses: morrisoncole/pr-lint-action@v1.5.0
-        with:
-          title-regex: "^(major|minor|fix)"
-          on-failed-regex-fail-action: true
-          on-failed-regex-request-changes: true
-          on-failed-regex-create-review: true
-          on-failed-regex-comment: "This PR does not begin with a release designation. Each PR into main must begin with 'major','minor', or 'fix'"
-          repo-token: '${{ secrets.GITHUB_TOKEN }}'
       - name: Checkout
         uses: actions/checkout@v2
+      # Setup .npmrc file to publish to GitHub Packages
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
@@ -30,5 +47,42 @@ jobs:
           # scope: '@yembo'
       - name: Install
         run: npm install
-      - run: npm run lint
-      - run: npm run format
+      - name: Get Current Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - name: Create To-Be Version
+        id: to-be-version
+        uses: actions/github-script@v3
+        with: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          console.log("HELLO THERE JS IN ACTIONS")
+          // grab the current version and split it
+          let currentVer = ${{steps.package-version.outputs.current-version}}
+          let currentVerArr = currentVer.split('.')
+
+          console.log('currentVer', currentVer)
+          // extract if the text in PR title says 'major', 'minor', or 'fix'
+          const pr_title = github.event.pull_request.head.ref
+          if (pr_title.search(/^(\bmajor\b/gm) !== -1)) {
+            console.log('MAJOR meow')
+            currentVerArr[0] = Number(currentVerArr[0])
+            currentVerArr[0]++
+            currentVerArr[0] = String(currentVerArr[0])
+          } else if (pr_title.search(/^(\minor\b/gm) !== -1)) {
+            console.log('MINOR woof')
+            currentVerArr[1] = Number(currentVerArr[1])
+            currentVerArr[1]++
+            currentVerArr[1] = String(currentVerArr[1])
+          } else if (pr_title.search(/^(\fix\b/gm) !== -1)) {
+            console.log('this is a fix')
+            currentVerArr[2] = Number(currentVerArr[2])
+            currentVerArr[2]++
+            currentVerArr[2] = String(currentVerArr[2])
+          }
+
+          // return new version in 0.0.0 format
+          console.log('final', currentVerArr.join('.') )
+          return currentVerArr.join('.')
+        result-encoding: string
+      - name: Version
+        run: npm version ${{steps.to-be-version.outputs.result}}
