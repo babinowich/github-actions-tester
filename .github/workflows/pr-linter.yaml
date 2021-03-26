@@ -62,18 +62,6 @@ jobs:
             let currentVer = String(${{steps.package-version.outputs.current-version}})
             let currentVerArr = currentVer.split('.')
 
-            let majorSearch = /^\bmajor\b/gm
-            let minorSearch = /^\bminor\b/gm
-            let fixSearch = /^\bfix\b/gm
-            // extract if the text in PR title says 'major', 'minor', or 'fix'
-            const pr_title = github.event.pull_request.head.ref
-            if (pr_title.search(majorSearch) !== -1) {
-              console.log('MAJOR meow')
-            } else if (pr_title.search(minorSearch) !== -1) {
-              console.log('MINOR woof')
-            } else if (pr_title.search(fixSearch) !== -1) {
-              console.log('this is a fix')
-            }
 
             // return new version in 0.0.0 format
             console.log('final', currentVerArr.join('.') )
