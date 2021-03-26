@@ -61,9 +61,6 @@ jobs:
             // grab the current version and split it
             let currentVer = String(${{steps.package-version.outputs.current-version}})
             let currentVerArr = currentVer.split('.')
-
-
             // return new version in 0.0.0 format
-            console.log('final', currentVerArr.join('.') )
       - name: Version
         run: npm version ${{steps.to-be-version.outputs.result}}
