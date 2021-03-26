@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Simple Create React App
+          Simple Create React App With a Change and another
         </p>
         <a
           className="App-link"

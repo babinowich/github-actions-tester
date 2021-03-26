@@ -1,0 +1,84 @@
+name: Publish & Package
+on:
+  pull_request:
+    types: closed
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Setup .npmrc file to publish to GitHub Packages
+        with:
+          ref: refs/heads/main
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          # scope: '@yembo'
+          scope: '@babinowich'
+      - name: Configure Git
+        run: |
+          git config user.email "kyle-bot@nothing.bot"
+          git config user.name "Version Bumper 🚀"
+          git remote add gh-origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+      - name: Install
+        run: npm install
+      - name: Get Current Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - name: Create To-Be Version
+        id: to-be-version
+        uses: actions/github-script@v3
+        with: 
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          result-encoding: string
+          script: |
+            // grab the current version and split it
+            let currentVer = "${{steps.package-version.outputs.current-version}}"
+            let currentVerArr = currentVer.split('.')
+
+            // extract if the text in PR title says 'major', 'minor', or 'fix'
+            const pr_title = "${{github.event.pull_request.title}}"
+            if (pr_title.search(/^\bmajor\b/gm) !== -1) {
+              currentVerArr[0] = Number(currentVerArr[0])
+              currentVerArr[0]++
+              currentVerArr[0] = String(currentVerArr[0])
+            } else if (pr_title.search(/^\bminor\b/gm) !== -1) {
+              currentVerArr[1] = Number(currentVerArr[1])
+              currentVerArr[1]++
+              currentVerArr[1] = String(currentVerArr[1])
+            } else if (pr_title.search(/^\bfix\b/gm) !== -1) {
+              currentVerArr[2] = Number(currentVerArr[2])
+              currentVerArr[2]++
+              currentVerArr[2] = String(currentVerArr[2])
+            } else {
+              console.log("Nothing in the title, this is weird")
+            }
+
+            // return new version in 0.0.0 format
+            console.log('final', currentVerArr.join('.') )
+            return currentVerArr.join('.')
+      - name: Version & Push back to git
+        run: | 
+          npm run prerelease
+          npm version ${{steps.to-be-version.outputs.result}} -m "Release ${{steps.to-be-version.outputs.result}} 🚀" --force
+          git status
+          git push gh-origin HEAD:master --tags
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: 'change version'
+      #   uses: reedyuk/npm-version@1.0.2
+      #   with:
+      #     version: ${{steps.to-be-version.outputs.result}}
+      # - run: | 
+      #     git status
+      #     git add .
+      #     git commit -a -m "Release ${{steps.to-be-version.outputs.result}} 🚀"
+      #     git branch temp
+      #     git checkout 
+      #     git push origin 
+      # - run: git push origin HEAD:<name-of-remote-branch>
