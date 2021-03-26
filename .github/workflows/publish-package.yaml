@@ -66,6 +66,6 @@ jobs:
             return currentVerArr.join('.')
       - name: Version & Push back to git
         run: npm version ${{steps.to-be-version.outputs.result}} -m "Release ${{steps.to-be-version.outputs.result}} 🚀"
-        run: git push
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: git push
