@@ -85,6 +85,6 @@ jobs:
             console.log('final', currentVerArr.join('.') )
             return currentVerArr.join('.')
       - name: Version
-        run: npm version ${{steps.to-be-version.outputs.result}}
+        run: npm version ${{steps.to-be-version.outputs.result}} --no-git-tag-version
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
