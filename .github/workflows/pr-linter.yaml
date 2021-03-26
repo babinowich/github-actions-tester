@@ -50,13 +50,6 @@ jobs:
       - name: Get Current Version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
-      - name: Get PR Title
-        id: pr-title-extract
-        uses: actions/github-script@v3
-        with: 
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          result-encoding: string
-          script: return "${{env.GITHUB_EVENT_NAME}}"
       - name: Create To-Be Version
         id: to-be-version
         uses: actions/github-script@v3
@@ -74,7 +67,7 @@ jobs:
             let fixSearch = /^\bfix\b/gm
             // extract if the text in PR title says 'major', 'minor', or 'fix'
             console.log("working up to here")
-            console.log("${{github.ref}}")
+            console.log("${{github.event.pull_request.head.ref}}")
             const pr_title = "Hi there"
             console.log(pr_title)
             if (pr_title.search(majorSearch) !== -1) {
