@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, edited, reopened]
+    types: [opened, edited, reopened, synchronize]
     branches:
       - main
 jobs:
@@ -53,7 +53,8 @@ jobs:
       - name: Create To-Be Version
         id: to-be-version
         uses: actions/github-script@v3
-        with: ${{secrets.GITHUB_TOKEN}}
+        with: 
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
               console.log("HELLO THERE JS IN ACTIONS")
               // grab the current version and split it
