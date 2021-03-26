@@ -78,5 +78,9 @@ jobs:
         uses: reedyuk/npm-version@1.0.2
         with:
           version: ${{steps.to-be-version.outputs.result}}
-      - run: git status
+      - run: | 
+          git status
+          git add .
+          git commit -a -m "Release ${{steps.to-be-version.outputs.result}} 🚀"
+          git push origin ${{ github.head_ref }}
       # - run: git push origin HEAD:<name-of-remote-branch>
