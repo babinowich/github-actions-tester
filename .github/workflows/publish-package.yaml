@@ -23,10 +23,10 @@ jobs:
           # Defaults to the user or organization that owns the workflow file
           # scope: '@yembo'
           scope: '@babinowich'
-        - name: Configure Git
-          run: |
-            git config user.email "kyle-bot@nothing.bot"
-            git config user.name "Version Bumper 🚀"
+      - name: Configure Git
+        run: |
+          git config user.email "kyle-bot@nothing.bot"
+          git config user.name "Version Bumper 🚀"
       - name: Install
         run: npm install
       - name: Get Current Version
