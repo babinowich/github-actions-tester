@@ -31,20 +31,22 @@ jobs:
           let currentVer = ${{steps.package-version.outputs.current-version}}
           let currentVerArr = currentVer.split('.')
 
-          console.log('currentVer', currentVer)
+          let majorSearch = /^\bmajor\b/gm
+          let minorSearch = /^\bminor\b/gm
+          let fixSearch = /^\bfix\b/gm
           // extract if the text in PR title says 'major', 'minor', or 'fix'
           const pr_title = github.event.pull_request.head.ref
-          if (pr_title.search(/^(\bmajor\b/gm) !== -1)) {
+          if (pr_title.search(majorSearch) !== -1) {
             console.log('MAJOR meow')
             currentVerArr[0] = Number(currentVerArr[0])
             currentVerArr[0]++
             currentVerArr[0] = String(currentVerArr[0])
-          } else if (pr_title.search(/^(\minor\b/gm) !== -1)) {
+          } else if (pr_title.search(minorSearch) !== -1) {
             console.log('MINOR woof')
             currentVerArr[1] = Number(currentVerArr[1])
             currentVerArr[1]++
             currentVerArr[1] = String(currentVerArr[1])
-          } else if (pr_title.search(/^(\fix\b/gm) !== -1)) {
+          } else if (pr_title.search(fixSearch) !== -1) {
             console.log('this is a fix')
             currentVerArr[2] = Number(currentVerArr[2])
             currentVerArr[2]++
