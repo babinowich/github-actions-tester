@@ -74,7 +74,7 @@ jobs:
             let fixSearch = /^\bfix\b/gm
             // extract if the text in PR title says 'major', 'minor', or 'fix'
             console.log("working up to here")
-            console.log(${{github.ref}})
+            console.log("${{github.ref}}")
             const pr_title = "Hi there"
             console.log(pr_title)
             if (pr_title.search(majorSearch) !== -1) {
