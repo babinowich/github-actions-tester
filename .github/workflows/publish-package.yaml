@@ -69,7 +69,9 @@ jobs:
           git add .
           git status
       - name: Version & Push back to git
-        run: npm version ${{steps.to-be-version.outputs.result}} -m "Release ${{steps.to-be-version.outputs.result}} 🚀" --force
+        run: | 
+          npm version ${{steps.to-be-version.outputs.result}} -m "Release ${{steps.to-be-version.outputs.result}} 🚀"
+          git status
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: git status
