@@ -66,11 +66,7 @@ jobs:
 
             // extract if the text in PR title says 'major', 'minor', or 'fix'
             console.log("working up to here")
-            const pr_title = "${{github.event.pull_request.head.ref}}"
-            console.log("${{github.base_ref}}")
-            console.log("${{github.head_ref}}")
-            console.log("${{github.event.pull_request.title}}")
-            console.log("${{github.ref}}")
+            const pr_title = "${{github.event.pull_request.title}}"
             console.log(pr_title)
             console.log(currentVerArr)
             if (pr_title.search(/^\bmajor\b/gm) !== -1) {
@@ -85,6 +81,8 @@ jobs:
               currentVerArr[2] = Number(currentVerArr[2])
               currentVerArr[2]++
               currentVerArr[2] = String(currentVerArr[2])
+            } else {
+              console.log("Nothing in the title, this is weird")
             }
 
             // return new version in 0.0.0 format
