@@ -1,13 +1,9 @@
 name: PR Linter
 on:
-  release:
-    types: [created]
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   types: [opened, edited, reopened, synchronize]
-  #   branches:
-  #     - main
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches:
+      - main
 jobs:
   pr-lint:
     runs-on: ubuntu-latest
