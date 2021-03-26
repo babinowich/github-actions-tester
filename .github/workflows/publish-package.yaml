@@ -1,7 +1,13 @@
 name: Publish & Package
 on:
-  release:
-    types: [created]
+  # release:
+  #   types: [created]
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches:
+      - main
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -13,9 +19,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
-          # registry-url: 'https://npm.pkg.github.com'
-          # # Defaults to the user or organization that owns the workflow file
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
           # scope: '@yembo'
+          scope: '@babinowich'
+        - name: Configure Git
+          run: |
+            git config user.email "kyle-bot@nothing.bot"
+            git config user.name "Version Bumper 🚀"
       - name: Install
         run: npm install
       - name: Get Current Version
@@ -24,42 +35,37 @@ jobs:
       - name: Create To-Be Version
         id: to-be-version
         uses: actions/github-script@v3
-        with: ${{secrets.GITHUB_TOKEN}}
-        script: |
-          console.log("HELLO THERE JS IN ACTIONS")
-          // grab the current version and split it
-          let currentVer = ${{steps.package-version.outputs.current-version}}
-          let currentVerArr = currentVer.split('.')
+        with: 
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          result-encoding: string
+          script: |
+            // grab the current version and split it
+            let currentVer = "${{steps.package-version.outputs.current-version}}"
+            let currentVerArr = currentVer.split('.')
 
-          let majorSearch = /^\bmajor\b/gm
-          let minorSearch = /^\bminor\b/gm
-          let fixSearch = /^\bfix\b/gm
-          // extract if the text in PR title says 'major', 'minor', or 'fix'
-          const pr_title = github.event.pull_request.head.ref
-          if (pr_title.search(majorSearch) !== -1) {
-            console.log('MAJOR meow')
-            currentVerArr[0] = Number(currentVerArr[0])
-            currentVerArr[0]++
-            currentVerArr[0] = String(currentVerArr[0])
-          } else if (pr_title.search(minorSearch) !== -1) {
-            console.log('MINOR woof')
-            currentVerArr[1] = Number(currentVerArr[1])
-            currentVerArr[1]++
-            currentVerArr[1] = String(currentVerArr[1])
-          } else if (pr_title.search(fixSearch) !== -1) {
-            console.log('this is a fix')
-            currentVerArr[2] = Number(currentVerArr[2])
-            currentVerArr[2]++
-            currentVerArr[2] = String(currentVerArr[2])
-          }
+            // extract if the text in PR title says 'major', 'minor', or 'fix'
+            const pr_title = "${{github.event.pull_request.title}}"
+            if (pr_title.search(/^\bmajor\b/gm) !== -1) {
+              currentVerArr[0] = Number(currentVerArr[0])
+              currentVerArr[0]++
+              currentVerArr[0] = String(currentVerArr[0])
+            } else if (pr_title.search(/^\bminor\b/gm) !== -1) {
+              currentVerArr[1] = Number(currentVerArr[1])
+              currentVerArr[1]++
+              currentVerArr[1] = String(currentVerArr[1])
+            } else if (pr_title.search(/^\bfix\b/gm) !== -1) {
+              currentVerArr[2] = Number(currentVerArr[2])
+              currentVerArr[2]++
+              currentVerArr[2] = String(currentVerArr[2])
+            } else {
+              console.log("Nothing in the title, this is weird")
+            }
 
-          // return new version in 0.0.0 format
-          console.log('final', currentVerArr.join('.') )
-          return currentVerArr.join('.')
-        result-encoding: string
-      - name: Version
-        run: npm version ${{steps.to-be-version.outputs.result}}
-      # - name: Release
-      #   run: npm publish
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+            // return new version in 0.0.0 format
+            console.log('final', currentVerArr.join('.') )
+            return currentVerArr.join('.')
+      - name: Version & Push back to git
+        run: npm version ${{steps.to-be-version.outputs.result}} -m "Release ${{steps.to-be-version.outputs.result}} 🚀"
+        run: git push
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
