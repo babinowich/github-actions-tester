@@ -67,9 +67,9 @@ jobs:
             let fixSearch = /^\bfix\b/gm
             // extract if the text in PR title says 'major', 'minor', or 'fix'
             console.log("working up to here")
-            console.log("${{github.event.pull_request.head.ref}}")
-            const pr_title = "Hi there"
+            const pr_title = "${{github.event.pull_request.head.ref}}"
             console.log(pr_title)
+            console.log(currentVerArr)
             if (pr_title.search(majorSearch) !== -1) {
               console.log('MAJOR meow')
               currentVerArr[0] = Number(currentVerArr[0])
