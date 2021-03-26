@@ -69,6 +69,7 @@ jobs:
             const pr_title = "${{github.event.pull_request.head.ref}}"
             console.log("${{github.base_ref}}")
             console.log("${{github.head_ref}}")
+            console.log("${{github.event.pull_request.title}}")
             console.log("${{github.ref}}")
             console.log(pr_title)
             console.log(currentVerArr)
