@@ -57,23 +57,25 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           result-encoding: string
           script: |
-              console.log("HELLO THERE JS IN ACTIONS")
-              // grab the current version and split it
-              let currentVer = String(${{steps.package-version.outputs.current-version}})
-              let currentVerArr = currentVer.split('.')
+            console.log("HELLO THERE JS IN ACTIONS")
+            // grab the current version and split it
+            let currentVer = String(${{steps.package-version.outputs.current-version}})
+            let currentVerArr = currentVer.split('.')
 
-              console.log('currentVer', currentVer)
-              // extract if the text in PR title says 'major', 'minor', or 'fix'
-              const pr_title = github.event.pull_request.head.ref
-              if (pr_title.search(/^\bmajor\b/gm) !== -1) {
-                console.log('MAJOR meow')
-              } else if (pr_title.search(/^\minor\b/gm) !== -1) {
-                console.log('MINOR woof')
-              } else if (pr_title.search(/^\fix\b/gm) !== -1) {
-                console.log('this is a fix')
-              } 
+            let majorSearch = /^\bmajor\b/gm
+            let minorSearch = /^\bminor\b/gm
+            let fixSearch = /^\bfix\b/gm
+            // extract if the text in PR title says 'major', 'minor', or 'fix'
+            const pr_title = github.event.pull_request.head.ref
+            if (pr_title.search(majorSearch) !== -1) {
+              console.log('MAJOR meow')
+            } else if (pr_title.search(minorSearch) !== -1) {
+              console.log('MINOR woof')
+            } else if (pr_title.search(fixSearch) !== -1) {
+              console.log('this is a fix')
+            }
 
-              // return new version in 0.0.0 format
-              console.log('final', currentVerArr.join('.') )
+            // return new version in 0.0.0 format
+            console.log('final', currentVerArr.join('.') )
       - name: Version
         run: npm version ${{steps.to-be-version.outputs.result}}
