@@ -11,7 +11,7 @@ jobs:
       - name: Semantic Checker
         uses: morrisoncole/pr-lint-action@v1.5.0
         with:
-          title-regex: "^(major|minor|fix)"
+          title-regex: "/^(major|minor|fix)/i"
           on-failed-regex-fail-action: true
           on-failed-regex-request-changes: true
           on-failed-regex-create-review: true
