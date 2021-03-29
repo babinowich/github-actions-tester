@@ -56,7 +56,7 @@ jobs:
               currentVerArr[2]++
               currentVerArr[2] = String(currentVerArr[2])
             } else {
-              console.log("Nothing in the title, this is weird")
+              console.log("ERROR: Nothing in the title")
             }
 
             // return new version in 0.0.0 format
@@ -69,15 +69,3 @@ jobs:
           git push gh-origin HEAD:main --tags
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # - name: 'change version'
-      #   uses: reedyuk/npm-version@1.0.2
-      #   with:
-      #     version: ${{steps.to-be-version.outputs.result}}
-      # - run: | 
-      #     git status
-      #     git add .
-      #     git commit -a -m "Release ${{steps.to-be-version.outputs.result}} 🚀"
-      #     git branch temp
-      #     git checkout 
-      #     git push origin 
-      # - run: git push origin HEAD:<name-of-remote-branch>
