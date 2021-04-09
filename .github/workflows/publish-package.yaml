@@ -81,10 +81,6 @@ jobs:
             // return new version in 0.0.0 format
             console.log('final', currentVerArr.join('.') )
             return currentVerArr.join('.')
-      - name: Create Github Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Version & Push back to git
         run: | 
           npm version ${{steps.to-be-version.outputs.result}} -m "Release ${{steps.to-be-version.outputs.result}} 🚀" --force
@@ -92,3 +88,7 @@ jobs:
           git push gh-origin HEAD:main
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
