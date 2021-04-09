@@ -1,32 +1,32 @@
-name: PR Linter
-on:
-  pull_request:
-    types: [opened, edited, reopened, synchronize]
-    branches:
-      - main
-jobs:
-  pr-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Semantic Checker
-        uses: morrisoncole/pr-lint-action@v1.5.0
-        with:
-          title-regex: "^(major|MAJOR|Major|minor|MINOR|Minor|fix|FIX|Fix)"
-          on-failed-regex-fail-action: true
-          on-failed-regex-request-changes: true
-          on-failed-regex-create-review: true
-          on-failed-regex-comment: "This PR does not begin with a release designation. Each PR into main must begin with 'major','minor', or 'fix'"
-          repo-token: '${{ secrets.GITHUB_TOKEN }}'
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
-          # registry-url: 'https://npm.pkg.github.com'
-          # # Defaults to the user or organization that owns the workflow file
-          # scope: '@yembo'
-      - name: Install
-        run: npm install
-      - run: npm run lint
-      - run: npm run format
+# name: PR Linter
+# on:
+#   pull_request:
+#     types: [opened, edited, reopened, synchronize]
+#     branches:
+#       - main
+# jobs:
+#   pr-lint:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Semantic Checker
+#         uses: morrisoncole/pr-lint-action@v1.5.0
+#         with:
+#           title-regex: "^(major|MAJOR|Major|minor|MINOR|Minor|fix|FIX|Fix)"
+#           on-failed-regex-fail-action: true
+#           on-failed-regex-request-changes: true
+#           on-failed-regex-create-review: true
+#           on-failed-regex-comment: "This PR does not begin with a release designation. Each PR into main must begin with 'major','minor', or 'fix'"
+#           repo-token: '${{ secrets.GITHUB_TOKEN }}'
+#       - name: Checkout
+#         uses: actions/checkout@v2
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: '14.x'
+#           # registry-url: 'https://npm.pkg.github.com'
+#           # # Defaults to the user or organization that owns the workflow file
+#           # scope: '@yembo'
+#       - name: Install
+#         run: npm install
+#       - run: npm run lint
+#       - run: npm run format
