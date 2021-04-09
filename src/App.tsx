@@ -14,7 +14,7 @@ export const App = (props: AppProps): JSX.Element => {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        Github actions tester
+        Github actions tester!!!
       </header>
     </div>
   );
