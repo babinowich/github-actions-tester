@@ -89,6 +89,6 @@ jobs:
         run: | 
           npm version ${{steps.to-be-version.outputs.result}} -m "Release ${{steps.to-be-version.outputs.result}} 🚀" --force
           git status
-          git push gh-origin HEAD:main --tags
+          git push gh-origin HEAD:main
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
