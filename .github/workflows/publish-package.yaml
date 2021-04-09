@@ -44,14 +44,33 @@ jobs:
             // extract if the text in PR title says 'major', 'minor', or 'fix'
             const pr_title = "${{github.event.pull_request.title}}"
             if (pr_title.search(/^\bmajor\b/gm) !== -1) {
+              // increment major
               currentVerArr[0] = Number(currentVerArr[0])
               currentVerArr[0]++
               currentVerArr[0] = String(currentVerArr[0])
+
+              // reset minor
+              currentVerArr[1] = Number(currentVerArr[1])
+              currentVerArr[1] = 0
+              currentVerArr[1] = String(currentVerArr[1])
+
+              // reset fix
+              currentVerArr[2] = Number(currentVerArr[2])
+              currentVerArr[2] = 0
+              currentVerArr[2] = String(currentVerArr[2])
+
             } else if (pr_title.search(/^\bminor\b/gm) !== -1) {
+              // increment minor
               currentVerArr[1] = Number(currentVerArr[1])
               currentVerArr[1]++
               currentVerArr[1] = String(currentVerArr[1])
+
+              // reset fix
+              currentVerArr[2] = Number(currentVerArr[2])
+              currentVerArr[2] = 0
+              currentVerArr[2] = String(currentVerArr[2])
             } else if (pr_title.search(/^\bfix\b/gm) !== -1) {
+              // increment fix
               currentVerArr[2] = Number(currentVerArr[2])
               currentVerArr[2]++
               currentVerArr[2] = String(currentVerArr[2])
@@ -62,10 +81,14 @@ jobs:
             // return new version in 0.0.0 format
             console.log('final', currentVerArr.join('.') )
             return currentVerArr.join('.')
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Version & Push back to git
         run: | 
           npm version ${{steps.to-be-version.outputs.result}} -m "Release ${{steps.to-be-version.outputs.result}} 🚀" --force
           git status
-          git push gh-origin HEAD:main --tags
+          git push gh-origin HEAD:main
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
