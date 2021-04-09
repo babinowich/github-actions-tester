@@ -88,3 +88,9 @@ jobs:
           git push gh-origin HEAD:main --tags
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{steps.to-be-version.outputs.result}}"
+          prerelease: true
+          title: "${{steps.to-be-version.outputs.result}} Build"
